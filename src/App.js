@@ -1,26 +1,29 @@
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
-import NavBar from './Main/Navegacion/Nav'
-import Inicio from './Main/Componentes/Inicio'
-import AppMovil from './Main/Componentes/AppMovil'
-import Producto from './Main/Componentes/Producto'
-import LogIn from './Main/Componentes/LogIn'
-import SignUp from './Main/Componentes/SignUp'
-import Error from './Main/Componentes/Error'
+import {useState} from 'react'
+import appInt from './Firebase/config'
+import {getAuth, onAuthStateChanged} from 'firebase/auth'
 
-export default function App() {
+import Home from './Componentes/Home';
+import LogIn from './Componentes/LogIn'
+
+const auth = getAuth(appInt)
+
+const App = () => {
+
+  const [usuario, setUsuario] = useState(null)
+
+  onAuthStateChanged(auth, (usuarioFirebase) =>{
+    if(usuarioFirebase){
+      setUsuario(usuarioFirebase)
+    }
+    else{
+      setUsuario(null)
+    }
+  })
   return (
-    <>
-        <Router>
-            <NavBar/>
-            <Routes>
-                <Route path='/' exact Component={Inicio}/>
-                <Route path='/AppMovil' exact Component={AppMovil}/>
-                <Route path='/Producto' exact Component={Producto}/>
-                <Route path='/SignUp' exact Component={SignUp}/>
-                <Route path='/LogIn' exact Component={LogIn}/>
-                <Route path='*' exact Component={Error}/>
-            </Routes>
-        </Router>
-    </>
+    <div>
+    {usuario ? <Home correoUsuario = {usuario.email} /> : <LogIn/>}
+    </div>
   )
 }
+
+export default App
