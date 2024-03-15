@@ -1,15 +1,68 @@
 import React from 'react'
 import appInt from '../Firebase/config'
-import {getAuth, signOut} from 'firebase/auth'
+import {getAuth, signOut, deleteUser, sendEmailVerification} from 'firebase/auth'
+import Swal from 'sweetalert2'
 const auth = getAuth(appInt)
 
 const Home = ({correoUsuario}) => {
+
+  function btnBorrar(){
+    const user = auth.currentUser;
+    Swal.fire({
+      title: "Esta segur@ de borrar su cuenta?",
+      showDenyButton: true,
+      confirmButtonText: "Cancelar",
+      denyButtonText: `Borrar Cuenta`
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire("Cancelando", "", "success");
+      } else if (result.isDenied) {
+        deleteUser(user).then(() => {
+          Swal.fire("Su cuenta a sido borrada", "", "info");
+        }).catch((error) => {
+          Swal.fire("Error", "", "error");
+        });
+      }
+    });
+  }
+
+  sendEmailVerification(auth.currentUser)
+    .then(() => {
+      Swal.fire({
+        icon:"success",
+        title:"Le mandamos un correo de verificacion",
+        text:"Revise su correo"
+      })
+    });
+
   return (
   <>
-            <body>~
+      
+
+      <div class="offcanvas offcanvas-start" data-bs-theme="dark" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+        <div class="offcanvas-header">
+          <h2 class="offcanvas-title" id="offcanvasScrollingLabel">BIENVENID@</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <hr></hr>
+            <h4 class="text-white">Sesion iniciadada como: &nbsp;<i>{correoUsuario}</i></h4>
+          <hr></hr>
+            <br></br>
+            <button className='btn btn-success' onClick={()=>signOut(auth)}>Cerrar Sesion</button>
+            <br></br>
+            <br></br>
+            <hr></hr>
+            <h4 class="text-white"><i>Desea eliminar su cuenta?</i></h4>
+            <hr></hr>
+            <button className='btn btn-danger' onClick={btnBorrar}>Borrar Cuenta</button>
+        </div>
+      </div>
+           <body>
                 <div class="container"> 
                 <br></br>
                     <header>
+                      <button class="btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><h2><i class="fa-solid fa-user-group">&nbsp;</i>Tu cuenta&nbsp;</h2></button>
                         <div class="category"></div>     
                     </header>
                     <section class="details">
@@ -26,18 +79,6 @@ const Home = ({correoUsuario}) => {
                             <p class="item-text"><span class="item-data">Beta</span></p>
                         </div>
                     </section>
-                    <article>
-                      <blockquote>
-                        <h2>Iniciaste sesion como:</h2>
-                      <h3><i>{correoUsuario}</i></h3>
-                      <br></br>
-                      <div className="d-flex justify-content-around mt-1">
-                      <div className="d-flex align-items-center gap-1">
-                      <div className="d-grid gap-2">
-                        <button className='btn btn-success' id='signOut' onClick={()=>signOut(auth)}>Cerrar Sesion</button>
-                        </div></div></div>
-                      </blockquote>
-                      </article>
                     <article>
                     <hr></hr>
                       <h2>INICIO</h2>

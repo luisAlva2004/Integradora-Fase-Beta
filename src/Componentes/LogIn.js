@@ -15,10 +15,26 @@ const LogIn = () => {
   function logInGoogle(){
     signInWithPopup(auth, provider)
   .then((result) => {
+    Swal.fire({
+      position: "top-end",
+      icon: "success",
+      title: "Iniciando sesion...",
+      showConfirmButton: false,
+      timer: 1500,
+      html:`
+      <div class="spinner-border text-success" role="status">
+      <span class="visually-hidden">Loading...</span>
+      </div>
+      `
+    });
     const credential = GoogleAuthProvider.credentialFromResult(result);
     const token = credential.accessToken;
     const user = result.user;
   }).catch((error) => {
+    Swal.fire({
+      icon:"error",
+      title:"Ocurrio un error intentelo mas tarde"
+    })
     const errorCode = error.code;
     const errorMessage = error.message;
     const email = error.customData.email;
@@ -90,11 +106,9 @@ const LogIn = () => {
 
   return (
     <>
-    <hr></hr>
      <body className="align-items-center vh-100">
       <div className='container'>
       <article>
-            <article>
             <div
             className="bg-white p-5 rounded-5 text-secondary shadow-lg"
             style={{width: "25rem"}}
@@ -116,7 +130,7 @@ const LogIn = () => {
               <input
                 className="form-control bg-light"
                 type="email"
-                placeholder="Ingrese su email" id='email'
+                placeholder="Ejemplo@email.com" id='email'
               />
             </div>
             <div className="input-group mt-1">
@@ -126,7 +140,7 @@ const LogIn = () => {
               <input
                 className="form-control bg-light"
                 type="password"
-                placeholder="Ingrese su contraseña" id='password'
+                placeholder="Contraseña" id='password'
               />
             </div>
             <br></br>
@@ -148,16 +162,13 @@ const LogIn = () => {
                 <span className="bg-white px-3">o</span>
               </div>
             </div>
-            <div
-              className="btn d-flex gap-1 justify-content-center mt-1 mt-4"
-            >
-              
+            <div className="btn d-flex gap-1 justify-content-center mt-1 mt-4">
               <div className="fw-semibold text-secondary"><button className='btn btn-secondary float-end' onClick={logInGoogle}>
               <i className="fa-brands fa-google"></i>&nbsp;
               Continúa con Google</button></div>
             </div>
-          </div></article></article>
-    </div></body><hr></hr><br></br>
+          </div></article>
+    </div></body><hr></hr>
     </>
   )
 }
