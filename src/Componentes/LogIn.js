@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import img from './css/img/usuario.jpg'
 import appInt from '../Firebase/config'
-import { getAuth , createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import { getAuth , createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from 'firebase/auth'
 import './css/styleP.css'
 import Swal from 'sweetalert2'
 
@@ -44,7 +44,7 @@ const LogIn = () => {
 
   const funcAutenticacion = async(e) =>{
     e.preventDefault()
-    const correo = e.target.email.value
+    const correo = e.target.email.value;
     const contraseña = e.target.password.value;
     
     var check = document.getElementById('terminos')
@@ -90,10 +90,32 @@ const LogIn = () => {
           await signInWithEmailAndPassword(auth, correo, contraseña)
         }catch (error){
           Swal.fire({
-            icon:"error",
-            title:"El correo o contraseña son incorrectos",
-            text:"O ya tenemos este correo dentro de nuestra BD"
-          })
+            title: "Parece que la contraseña que intenta ingresar es incorrecta",
+            text: "Desea cambiar su contraseña?",
+            showDenyButton: true,
+            confirmButtonText: "No, si la recuerdo",
+            denyButtonText: `Si porfavor`
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire("Okey", "Le quedan pocos intentos", "warning");
+            } else if (result.isDenied) {
+              sendPasswordResetEmail(auth, correo)
+              .then(() => {
+                Swal.fire({
+                  icon:"success",
+                  title:"Se le envio un correo para restablecer su contraseña",
+                })
+              })
+              .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                Swal.fire({
+                  icon:"error",
+                  title:errorMessage,
+                })
+              });
+            }
+          });
         }
       }
     }else{
@@ -142,9 +164,9 @@ const LogIn = () => {
                 type="password"
                 placeholder="Contraseña" id='password'
               />
+              <br></br>
             </div>
-            <br></br>
-            <div className="d-flex justify-content-around mt-1">
+            <div className="d-flex justify-content-around mt-4">
               <div className="d-flex align-items-center gap-1">
                 <input className="form-check-input" type="checkbox" id='terminos' />
                 <div className="pt-1 fw-semibold" style={{fontsize: "0.9rem"}}>Acepto terminos y condiciones</div>

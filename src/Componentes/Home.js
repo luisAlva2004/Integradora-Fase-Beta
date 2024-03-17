@@ -97,9 +97,7 @@ const Home = ({correoUsuario}) => {
 
                         <h4>¿Y para los que no lo tienen instalado?</h4>
                         <p>Para las personas que no tengan el producto, solo se les hablara de igual  forma que la pagina web sobre la idea; se sabrá cuando alguien tiene el producto o no porque para ingresar al apartado de detalles y alertas del sensor (ya que tendrá apartado de información solamente y el apartado de detalles y alertas del sensor), deberán iniciar sección o conectarse con un código especial del sensor de su producto instalado.</p>
-            
-                        <h4>QR de descarga</h4>
-                       <p>-----------------PROXIMAMENTE--------------------</p>
+          
                         <hr></hr>
                         <h2>PRODUCTO</h2>
                         <h4>Objetivo</h4>
